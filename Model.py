@@ -2,6 +2,8 @@ import torch
 from torch import nn, optim
 import utils as u
 
+#########################################################################################################
+
 class CNN_Model(nn.Module):
     def __init__(self, filter_sizes, HL=None):
         super(CNN_Model, self).__init__()
