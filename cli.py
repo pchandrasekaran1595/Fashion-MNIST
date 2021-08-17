@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from imgaug import augmenters
-from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader as DL
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 import utils as u
 from api import fit, predict
@@ -45,8 +46,14 @@ def build_train_and_valid_loaders(batch_size=None, augment=False):
     return dataloaders
 
 
-def build_test_loader():
-    pass
+def test_set_accuracy(model, batch_size):
+    images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH, "Test.csv"))
+    ts_data_setup = DS(X=images, y=None, transform=u.TRANSFORM, mode="test")
+    ts_data = DL(ts_data_setup, batch_size=batch_size, shuffle=False)
+
+    y_pred = predict(model, ts_data)
+    print("Test Set Accuracy : {:.5f}".format(accuracy_score(y_pred, labels)))
+    u.breaker()
 
 #########################################################################################################
 def save_graphs(L, A) -> None:
@@ -134,5 +141,6 @@ def app():
     L, A, _, _ = fit(model=model, optimizer=optimizer, scheduler=None, epochs=epochs,
                      dataloaders=dataloaders, early_stopping_patience=early_stopping, verbose=True)
     save_graphs(L, A)
-
+    test_set_accuracy(model, batch_size)
+    
 #########################################################################################################
