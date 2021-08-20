@@ -20,6 +20,8 @@ Deep Learning Analysis on the Fashion MNIST Dataset
 6. --bs     - Batch Size used for dataloader creation
 
 7. --early  - Number of epochs to wait after stagnated validation metrics before stopping the training
+
+8. --kaggle - Used to run the system within a kaggle notebook created on the dataset
 </pre>
 
 &nbsp;

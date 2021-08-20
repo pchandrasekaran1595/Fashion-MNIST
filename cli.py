@@ -26,8 +26,11 @@ def get_images_and_labels_from_csv(path=None):
 
 #########################################################################################################
 
-def build_train_and_valid_loaders(batch_size=None, augment=False):
-    images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH, "Train.csv"))
+def build_train_and_valid_loaders(batch_size=None, augment=False, in_kaggle=False):
+    if in_kaggle:
+        images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH_2, "fashion-mnist_train.csv"))
+    else:
+        images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH_1, "Train.csv"))
 
     if augment:
         augment = get_dataset_augment(seed=u.SEED)
@@ -46,8 +49,11 @@ def build_train_and_valid_loaders(batch_size=None, augment=False):
     return dataloaders
 
 
-def test_set_accuracy(model, batch_size):
-    images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH, "Test.csv"))
+def test_set_accuracy(model=None, batch_size=None, in_kaggle=False):
+    if in_kaggle:
+        images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH_2, "fashion-mnist_test.csv"))
+    else:
+        images, labels = get_images_and_labels_from_csv(os.path.join(u.DATA_PATH_1, "Test.csv"))
     ts_data_setup = DS(X=images, y=None, transform=u.TRANSFORM, mode="test")
     ts_data = DL(ts_data_setup, batch_size=batch_size, shuffle=False)
 
@@ -104,6 +110,7 @@ def app():
     args_5 = "--wd"
     args_6 = "--bs"
     args_7 = "--early"
+    args_8 = "--kaggle"
 
     epochs = 10
     HL = None
@@ -112,6 +119,7 @@ def app():
     wd = 0
     batch_size = 64
     early_stopping = 5
+    in_kaggle = False
 
     if args_1 in sys.argv:
         if sys.argv[sys.argv.index(args_1) + 1] == "1":
@@ -133,14 +141,16 @@ def app():
         batch_size = int(sys.argv[sys.argv.index(args_6) + 1])
     if args_7 in sys.argv:
         early_stopping = int(sys.argv[sys.argv.index(args_7) + 1])
+    if args_8 in sys.argv:
+        in_kaggle = True
     
-    dataloaders = build_train_and_valid_loaders(batch_size=batch_size)
+    dataloaders = build_train_and_valid_loaders(batch_size=batch_size, in_kaggle=in_kaggle)
     model = build_model(filter_sizes=filter_sizes, HL=HL)
     optimizer = model.getOptimizer(lr=lr, wd=wd)
 
     L, A, _, _ = fit(model=model, optimizer=optimizer, scheduler=None, epochs=epochs,
                      dataloaders=dataloaders, early_stopping_patience=early_stopping, verbose=True)
     save_graphs(L, A)
-    test_set_accuracy(model, batch_size)
+    test_set_accuracy(model, batch_size, in_kaggle)
     
 #########################################################################################################
