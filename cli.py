@@ -128,9 +128,9 @@ def app():
             HL = [int(sys.argv[sys.argv.index(args_1) + 2]), 
                   int(sys.argv[sys.argv.index(args_1) + 3])]
     if args_2 in sys.argv:
-        filter_sizes = [int(sys.argv[sys.argv.index(args_2) + 2]), 
-                        int(sys.argv[sys.argv.index(args_2) + 3]),
-                        int(sys.argv[sys.argv.index(args_2) + 4])]
+        filter_sizes = [int(sys.argv[sys.argv.index(args_2) + 1]), 
+                        int(sys.argv[sys.argv.index(args_2) + 2]),
+                        int(sys.argv[sys.argv.index(args_2) + 3])]
     if args_3 in sys.argv:
         epochs = int(sys.argv[sys.argv.index(args_3) + 1])
     if args_4 in sys.argv:
