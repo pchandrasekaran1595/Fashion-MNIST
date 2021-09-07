@@ -13,6 +13,7 @@ def fit(model=None, optimizer=None, scheduler=None, epochs=None,
     def get_accuracy(y_pred, y_true):
         y_pred, y_true = torch.argmax(y_pred, dim=1).detach(), y_true.detach()
         return torch.count_nonzero(y_true == y_pred).item() / len(y_pred)
+        # return torch.sum(torch.eq(y_true, y_pred)).item() / len(y_pred)
     
     u.breaker()
     u.myprint("Training ...", "cyan")
